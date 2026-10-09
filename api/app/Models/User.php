@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Rol;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -43,6 +44,12 @@ class User extends Authenticatable
             'rol' => Rol::class,
             'activo' => 'boolean',
         ];
+    }
+
+    /** Obras a las que está asignado. */
+    public function obras(): BelongsToMany
+    {
+        return $this->belongsToMany(Obra::class)->withTimestamps();
     }
 
     /** ¿El usuario tiene alguno de estos roles? */
