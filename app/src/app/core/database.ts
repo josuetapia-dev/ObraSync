@@ -57,6 +57,31 @@ const MIGRACIONES: string[] = [
    );
    CREATE INDEX IF NOT EXISTS idx_asistencias_status ON asistencias (sync_status);
    CREATE INDEX IF NOT EXISTS idx_asistencias_usuario_fecha ON asistencias (user_id, registrado_en);`,
+
+  // v4: bitácora de obra. Se edita sin señal; los cambios propios se suben y los de
+  // la cuadrilla se bajan. Si dos editan lo mismo, el servidor decide (gana la más reciente).
+  `CREATE TABLE IF NOT EXISTS bitacora (
+     local_id TEXT PRIMARY KEY,       -- UUID (el mismo en Laravel)
+     remote_id INTEGER,
+     obra_id INTEGER NOT NULL,
+     autor_id INTEGER NOT NULL,
+     autor_nombre TEXT,
+     editado_por_id INTEGER,
+     editado_por_nombre TEXT,
+     categoria TEXT NOT NULL,         -- avance | incidencia | material | seguridad
+     titulo TEXT NOT NULL,
+     descripcion TEXT,
+     fecha TEXT NOT NULL,             -- día de la nota (YYYY-MM-DD)
+     editado_en TEXT NOT NULL,        -- última edición (ISO, UTC)
+     eliminado INTEGER NOT NULL DEFAULT 0,
+     sync_status TEXT NOT NULL DEFAULT 'synced',  -- synced | pending | error | rechazado
+     pendiente_de INTEGER,            -- quién hizo el cambio local (solo esa sesión lo envía)
+     intentos INTEGER NOT NULL DEFAULT 0,
+     ultimo_error TEXT,
+     conflicto INTEGER NOT NULL DEFAULT 0   -- 1 = tu edición perdió contra una más reciente
+   );
+   CREATE INDEX IF NOT EXISTS idx_bitacora_obra_fecha ON bitacora (obra_id, fecha);
+   CREATE INDEX IF NOT EXISTS idx_bitacora_status ON bitacora (sync_status);`,
 ];
 
 /** Conexión única a SQLite (en el teléfono es nativo; en el navegador usa jeep-sqlite). */

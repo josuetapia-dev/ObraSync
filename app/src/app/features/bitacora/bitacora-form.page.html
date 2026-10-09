@@ -1,0 +1,120 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/bitacora" text="" aria-label="Volver a la bitácora"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ esNueva() ? 'Nueva nota' : soloLectura() ? 'Nota' : 'Editar nota' }}</ion-title>
+    <app-estado-red slot="end"></app-estado-red>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="cp-page">
+    @if (noEncontrada()) {
+      <div class="cp-empty">
+        <ion-icon name="book-outline" aria-hidden="true"></ion-icon>
+        <h2>Nota no disponible</h2>
+        <p>Quizá alguien la borró. Vuelve a la bitácora.</p>
+      </div>
+    } @else {
+      <!-- Avisos -->
+      @if (entrada(); as e) {
+        @if (e.conflicto) {
+          <p class="aviso info" role="status">
+            <ion-icon name="swap-horizontal-outline" aria-hidden="true"></ion-icon>
+            {{ e.editado_por_nombre ?? 'Otra persona' }} editó esta nota después que tú, así que se conservó su versión (gana la edición más reciente).
+          </p>
+        }
+        @if (e.sync_status === 'rechazado') {
+          <p class="aviso danger" role="alert">
+            <ion-icon name="close-circle-outline" aria-hidden="true"></ion-icon>
+            El servidor rechazó este cambio: {{ e.ultimo_error }}
+          </p>
+        }
+        @if (soloLectura()) {
+          <p class="aviso" role="status">
+            <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
+            Solo el autor ({{ e.autor_nombre }}) o el mayordomo pueden editar esta nota.
+          </p>
+        }
+      }
+
+      <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+        <!-- Obra: solo al crear (una nota no cambia de obra) -->
+        @if (esNueva()) {
+          <div class="cp-field">
+            <label for="obra">Obra</label>
+            <select id="obra" formControlName="obraId">
+              @for (o of obras(); track o.id) {
+                <option [ngValue]="o.id">{{ o.nombre }}</option>
+              }
+            </select>
+          </div>
+        } @else if (entrada(); as e) {
+          <p class="obra-fija">
+            <ion-icon name="business-outline" aria-hidden="true"></ion-icon> {{ nombreObra(e.obra_id) }}
+          </p>
+        }
+
+        <fieldset class="categorias">
+          <legend>Categoría</legend>
+          <div class="opciones">
+            @for (c of categorias; track c.valor) {
+              <label class="opcion cat-{{ c.valor }}">
+                <input type="radio" formControlName="categoria" [value]="c.valor">
+                <ion-icon [name]="c.icono" aria-hidden="true"></ion-icon>
+                <span>{{ c.etiqueta }}</span>
+              </label>
+            }
+          </div>
+        </fieldset>
+
+        <div class="cp-field" [class.invalid]="errorDe('titulo')">
+          <label for="titulo">Título</label>
+          <input id="titulo" type="text" formControlName="titulo" maxlength="120" autocomplete="off"
+            placeholder="Ej. Colado de losa, segundo nivel"
+            [attr.aria-invalid]="!!errorDe('titulo')" [attr.aria-describedby]="errorDe('titulo') ? 'titulo-error' : null">
+          @if (errorDe('titulo'); as msg) { <p class="cp-field-error" id="titulo-error">{{ msg }}</p> }
+        </div>
+
+        <div class="cp-field" [class.invalid]="errorDe('descripcion')">
+          <label for="descripcion">Detalle <span class="opcional">(opcional)</span></label>
+          <textarea id="descripcion" formControlName="descripcion" rows="5" [attr.maxlength]="maxDescripcion"
+            placeholder="Qué se hizo, qué falta, quién debe atenderlo…" aria-describedby="descripcion-contador"></textarea>
+          <p class="contador cp-num" id="descripcion-contador">{{ form.controls.descripcion.value.length }} / {{ maxDescripcion }}</p>
+        </div>
+
+        <div class="cp-field" [class.invalid]="errorDe('fecha')">
+          <label for="fecha">Fecha</label>
+          <input id="fecha" type="date" formControlName="fecha" [max]="hoy" [attr.aria-invalid]="!!errorDe('fecha')">
+          @if (errorDe('fecha'); as msg) { <p class="cp-field-error">{{ msg }}</p> }
+        </div>
+
+        @if (!soloLectura()) {
+          <button type="submit" class="cp-btn cp-btn-primary cp-block" [disabled]="guardando()">
+            @if (guardando()) {
+              <ion-spinner name="crescent" aria-hidden="true"></ion-spinner> Guardando…
+            } @else {
+              <ion-icon name="checkmark-circle-outline" aria-hidden="true"></ion-icon> Guardar
+            }
+          </button>
+          <p class="ayuda">Se guarda en el teléfono aunque no haya señal.</p>
+
+          @if (!esNueva()) {
+            <button type="button" class="cp-btn cp-btn-danger cp-block borrar" (click)="confirmarEliminar()">
+              <ion-icon name="trash-outline" aria-hidden="true"></ion-icon> Borrar nota
+            </button>
+          }
+        }
+      </form>
+
+      @if (entrada(); as e) {
+        <p class="historia">
+          Creada por {{ e.autor_nombre }}
+          @if (e.editado_por_nombre && e.editado_por_id !== e.autor_id) { · editada por {{ e.editado_por_nombre }} }
+          · {{ e.editado_en | date: 'd MMM, HH:mm' }}
+        </p>
+      }
+    }
+  </main>
+</ion-content>

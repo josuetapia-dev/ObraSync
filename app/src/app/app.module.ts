@@ -14,6 +14,7 @@ import { Auth } from './core/auth/auth';
 import { tokenInterceptor } from './core/auth/token.interceptor';
 import { Sincronizador } from './core/sync/sincronizador';
 import { AsistenciaSync } from './features/asistencia/asistencia.sync';
+import { BitacoraSync } from './features/bitacora/bitacora.sync';
 import { prepararSqliteWeb } from './core/sqlite-web';
 import { precargarComponentes, registrarIconos } from './core/offline-assets';
 
@@ -37,12 +38,14 @@ registrarIconos();
       const auth = inject(Auth);
       const sincronizador = inject(Sincronizador);
       sincronizador.registrar(inject(AsistenciaSync));
+      sincronizador.registrar(inject(BitacoraSync));
       precargarComponentes(); // en segundo plano, mientras hay red
       await prepararSqliteWeb();
       await database.inicializar();
       auth.refrescarUsuario(); // si hay red, actualiza nombre/rol (no bloquea el arranque)
+      // Con la base abierta ya se puede sincronizar: si hay red, envía lo que quedó pendiente.
+      sincronizador.iniciar();
       await sincronizador.contar();
-      sincronizador.sincronizar(); // envía lo que quedó pendiente (no bloquea el arranque)
     }),
   ],
   bootstrap: [AppComponent],

@@ -16,6 +16,10 @@ const routes: Routes = [
         loadChildren: () => import('../features/asistencia/asistencia.module').then(m => m.AsistenciaPageModule)
       },
       {
+        path: 'bitacora',
+        loadChildren: () => import('../features/bitacora/bitacora.module').then(m => m.BitacoraPageModule)
+      },
+      {
         path: 'perfil',
         loadChildren: () => import('../features/perfil/perfil.module').then(m => m.PerfilPageModule)
       },
