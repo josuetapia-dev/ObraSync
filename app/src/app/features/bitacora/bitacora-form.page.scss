@@ -1,0 +1,75 @@
+.aviso {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  border-radius: var(--cp-radius-sm);
+  background: var(--cp-hover);
+  color: var(--cp-fg);
+  font-size: 0.875rem;
+  line-height: 1.45;
+
+  ion-icon { flex-shrink: 0; font-size: 18px; margin-top: 1px; }
+  &.info { background: var(--cp-secondary-soft); color: var(--cp-secondary); }
+  &.danger { background: var(--cp-danger-bg); color: var(--cp-danger); }
+}
+
+.obra-fija {
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cp-muted);
+  font-weight: 600;
+}
+
+// ---------------------------------------------------------- categorías (radios con forma de tarjeta)
+.categorias {
+  margin: 0 0 16px;
+  padding: 0;
+  border: none;
+
+  legend { margin-bottom: 6px; padding: 0; font-size: 0.875rem; font-weight: 600; }
+}
+
+.opciones { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+@media (min-width: 560px) { .opciones { grid-template-columns: repeat(4, 1fr); } }
+
+.opcion {
+  position: relative;
+  min-height: 52px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--cp-radius);
+  border: 1px solid var(--cp-divider);
+  background: var(--cp-surface);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--cp-fast) ease, background var(--cp-fast) ease, transform var(--cp-fast) var(--cp-ease);
+
+  input { position: absolute; opacity: 0; pointer-events: none; }
+  ion-icon { font-size: 20px; color: var(--cp-muted); }
+  &:active { transform: scale(0.98); }
+  &:has(input:focus-visible) { outline: 2px solid var(--cp-ring); outline-offset: 2px; }
+  &:has(input:disabled) { cursor: default; opacity: 0.7; }
+
+  // Seleccionada: borde, fondo e icono del color de su categoría.
+  &:has(input:checked) { border-width: 2px; }
+  &.cat-avance:has(input:checked) { border-color: var(--cp-ok); background: var(--cp-ok-bg); ion-icon { color: var(--cp-ok); } }
+  &.cat-incidencia:has(input:checked) { border-color: var(--cp-danger); background: var(--cp-danger-bg); ion-icon { color: var(--cp-danger); } }
+  &.cat-material:has(input:checked) { border-color: var(--cp-secondary); background: var(--cp-secondary-soft); ion-icon { color: var(--cp-secondary); } }
+  &.cat-seguridad:has(input:checked) { border-color: var(--cp-warn); background: var(--cp-warn-bg); ion-icon { color: var(--cp-warn); } }
+}
+
+.opcional { color: var(--cp-muted); font-weight: 400; }
+.contador { margin: 4px 0 0; color: var(--cp-muted); font-size: 0.75rem; text-align: right; }
+
+input:disabled, textarea:disabled, select:disabled { opacity: 0.75; }
+
+.ayuda { margin: 8px 0 0; color: var(--cp-muted); font-size: 0.8125rem; text-align: center; }
+.borrar { margin-top: 24px; }
+
+.historia { margin: 24px 0 0; color: var(--cp-muted); font-size: 0.8125rem; text-align: center; }

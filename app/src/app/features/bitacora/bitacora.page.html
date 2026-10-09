@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Bitácora</ion-title>
+    <app-estado-red slot="end"></app-estado-red>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refrescar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <main class="cp-page">
+    @if (!cargando() && !obras().length) {
+      <div class="cp-empty">
+        <ion-icon name="book-outline" aria-hidden="true"></ion-icon>
+        <h2>Sin obras guardadas</h2>
+        <p>La bitácora es por obra. Abre "Obras" con internet una vez para descargarlas.</p>
+      </div>
+    } @else {
+      <!-- Búsqueda y nueva nota -->
+      <div class="barra">
+        <div class="buscador">
+          <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+          <input type="search" placeholder="Buscar en títulos, notas o autor" aria-label="Buscar en la bitácora"
+            [value]="texto()" (input)="escribir($any($event.target).value)" enterkeyhint="search">
+        </div>
+        <a class="cp-btn cp-btn-primary nueva" routerLink="/tabs/bitacora/nueva" aria-label="Nueva nota">
+          <ion-icon name="add" aria-hidden="true"></ion-icon><span class="texto-nueva">Nueva</span>
+        </a>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros" role="group" aria-label="Filtrar por categoría">
+        @for (c of categorias; track c.valor) {
+          <button type="button" class="filtro cat-{{ c.valor }}" [class.activo]="filtroCategoria() === c.valor"
+            [attr.aria-pressed]="filtroCategoria() === c.valor" (click)="elegirCategoria(c.valor)">
+            <ion-icon [name]="c.icono" aria-hidden="true"></ion-icon>{{ c.etiqueta }}
+          </button>
+        }
+        <button type="button" class="filtro" [class.activo]="soloPendientes()" [attr.aria-pressed]="soloPendientes()"
+          (click)="alternarPendientes()">
+          <ion-icon name="cloud-upload-outline" aria-hidden="true"></ion-icon>Sin enviar
+        </button>
+      </div>
+
+      @if (obras().length > 1) {
+        <div class="cp-field obra">
+          <label for="filtro-obra" class="oculto">Obra</label>
+          <select id="filtro-obra" (change)="elegirObra($any($event.target).value)">
+            <option value="" [selected]="!filtroObra()">Todas mis obras</option>
+            @for (o of obras(); track o.id) {
+              <option [value]="o.id" [selected]="o.id === filtroObra()">{{ o.nombre }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <p class="resumen" aria-live="polite">
+        {{ entradas().length }} {{ entradas().length === 1 ? 'nota' : 'notas' }}
+        @if (hayFiltros()) {
+          · <button type="button" class="enlace" (click)="limpiarFiltros()">Quitar filtros</button>
+        }
+      </p>
+
+      <!-- Lista -->
+      @if (cargando()) {
+        <ul class="lista" aria-busy="true" aria-label="Cargando bitácora">
+          @for (i of [1, 2, 3]; track i) {
+            <li class="cp-card skeleton"><span></span><span></span></li>
+          }
+        </ul>
+      } @else if (!entradas().length) {
+        <div class="cp-empty">
+          <ion-icon [name]="hayFiltros() ? 'search-outline' : 'book-outline'" aria-hidden="true"></ion-icon>
+          @if (hayFiltros()) {
+            <h2>Sin resultados</h2>
+            <p>Prueba con otras palabras o quita los filtros.</p>
+          } @else {
+            <h2>La bitácora está vacía</h2>
+            <p>Registra avances, incidencias, material o temas de seguridad. Funciona sin señal.</p>
+          }
+        </div>
+      } @else {
+        <ul class="lista cp-stagger" aria-label="Notas de bitácora">
+          @for (e of entradas(); track e.local_id; let i = $index) {
+            <li [style.--i]="i">
+              <a class="cp-card nota" [routerLink]="['/tabs/bitacora', e.local_id]">
+                <div class="cabecera">
+                  <span class="cp-chip cat-{{ e.categoria }}">
+                    <ion-icon [name]="categoria[e.categoria].icono" aria-hidden="true"></ion-icon>{{ categoria[e.categoria].etiqueta }}
+                  </span>
+                  <span class="fecha cp-num">{{ e.fecha | date: 'EEE d MMM' : 'UTC' }}</span>
+                </div>
+                <h2 class="titulo">{{ e.titulo }}</h2>
+                @if (e.descripcion) { <p class="descripcion">{{ e.descripcion }}</p> }
+                <p class="meta">
+                  {{ esMia(e) ? 'Tú' : e.autor_nombre }}
+                  @if (obras().length > 1) { · {{ nombres().get(e.obra_id) }} }
+                </p>
+                @if (estado(e); as s) {
+                  <span class="cp-chip {{ s.clase }} estado"><ion-icon [name]="s.icono" aria-hidden="true"></ion-icon>{{ s.texto }}</span>
+                }
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </main>
+</ion-content>

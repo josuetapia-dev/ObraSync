@@ -1,4 +1,4 @@
-import { Injectable, effect, inject, signal, untracked } from '@angular/core';
+import { Injectable, Injector, effect, inject, signal, untracked } from '@angular/core';
 
 import { Auth } from '../auth/auth';
 import { Red } from '../red';
@@ -22,14 +22,23 @@ export class Sincronizador {
 
   private auth = inject(Auth);
   private red = inject(Red);
+  private injector = inject(Injector);
   private colas: ColaSync[] = [];
+  private iniciado = false;
 
   readonly pendientes = signal(0);
   readonly sincronizando = signal(false);
   readonly ultimo = signal<ResumenSync | null>(null);
 
-  constructor() {
-    // Al volver la red, enviar lo pendiente.
+  /**
+   * Arranca la sincronización automática. Se llama una sola vez, cuando la base local ya
+   * está abierta (antes, las colas no tienen de dónde leer).
+   */
+  iniciar() {
+    if (this.iniciado) return;
+    this.iniciado = true;
+
+    // Al volver la red (y al iniciar, si hay red), enviar lo pendiente.
     // untracked: el effect solo debe reaccionar a la red. Sin él, también "escucharía" las
     // señales que lee sincronizar() (p. ej. sincronizando) y se dispararía en ciclo infinito.
     effect(() => {
@@ -37,7 +46,7 @@ export class Sincronizador {
       untracked(() => {
         if (enLinea) this.sincronizar();
       });
-    });
+    }, { injector: this.injector });
 
     setInterval(() => {
       if (this.pendientes() > 0) this.sincronizar();
@@ -54,7 +63,7 @@ export class Sincronizador {
   /** Recalcula el total de pendientes del usuario con sesión. */
   async contar() {
     const userId = this.auth.usuario()?.id;
-    if (!userId) {
+    if (!userId || !this.iniciado) {
       this.pendientes.set(0);
       return;
     }
@@ -68,7 +77,7 @@ export class Sincronizador {
    */
   async sincronizar(): Promise<ResumenSync | null> {
     const userId = this.auth.usuario()?.id;
-    if (!userId || !navigator.onLine || this.sincronizando()) {
+    if (!userId || !this.iniciado || !navigator.onLine || this.sincronizando()) {
       return null;
     }
 

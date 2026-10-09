@@ -209,6 +209,13 @@ ion-tab-button {
   &.ok { color: var(--cp-ok); background: var(--cp-ok-bg); }
   &.warn { color: var(--cp-warn); background: var(--cp-warn-bg); }
   &.danger { color: var(--cp-danger); background: var(--cp-danger-bg); }
+  &.info { color: var(--cp-secondary); background: var(--cp-secondary-soft); }
+
+  // Categorías de bitácora (siempre con icono y texto, no solo color)
+  &.cat-avance { color: var(--cp-ok); background: var(--cp-ok-bg); }
+  &.cat-incidencia { color: var(--cp-danger); background: var(--cp-danger-bg); }
+  &.cat-material { color: var(--cp-secondary); background: var(--cp-secondary-soft); }
+  &.cat-seguridad { color: var(--cp-warn); background: var(--cp-warn-bg); }
 }
 
 /* Estados vacíos */
