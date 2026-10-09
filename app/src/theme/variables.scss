@@ -1,0 +1,68 @@
+// Tokens de diseño (fuente: design-system/clima-pwa/MASTER.md · estilo minimalista suizo).
+// Todas las pantallas usan estas variables. Contraste verificado: textos ≥ 4.5:1 y
+// bordes de controles ≥ 3:1 en modo claro y oscuro.
+
+:root {
+  --cp-font-heading: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --cp-font-body: 'Work Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  // Colores (modo claro)
+  --cp-bg: #f8fafc;
+  --cp-surface: #ffffff;
+  --cp-fg: #0f172a;
+  --cp-muted: #475569;
+  --cp-border: #64748b;        // bordes de botones e inputs
+  --cp-divider: #e2e8f0;       // líneas y bordes de tarjetas
+  --cp-primary: #2563eb;
+  --cp-primary-pressed: #1d4ed8;
+  --cp-on-primary: #ffffff;
+  --cp-secondary: #4f46e5;     // índigo: misma gama que el azul, para degradados y acentos
+  --cp-secondary-soft: #eef2ff;
+  --cp-gradient: linear-gradient(135deg, var(--cp-primary) 0%, var(--cp-secondary) 100%);
+  --cp-danger: #dc2626;
+  --cp-danger-bg: #fef2f2;
+  --cp-ok: #065f46;            // sincronizado
+  --cp-ok-bg: #d1fae5;
+  --cp-warn: #92400e;          // pendiente
+  --cp-warn-bg: #fef3c7;
+  --cp-ring: #2563eb;
+  --cp-hover: rgba(15, 23, 42, 0.05);
+
+  --cp-radius-sm: 10px;
+  --cp-radius: 14px;
+  --cp-radius-lg: 18px;
+  --cp-control-h: 48px;
+
+  // Movimiento: duraciones cortas y curvas suaves (se anulan con "reducir movimiento").
+  --cp-fast: 150ms;
+  --cp-base: 260ms;
+  --cp-slow: 420ms;
+  --cp-ease: cubic-bezier(0.2, 0, 0, 1);
+  --cp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --ion-font-family: var(--cp-font-body);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cp-bg: #0f172a;
+    --cp-surface: #1e293b;
+    --cp-fg: #f1f5f9;
+    --cp-muted: #94a3b8;
+    --cp-border: #7c8ba1;
+    --cp-divider: #334155;
+    --cp-primary: #60a5fa;
+    --cp-primary-pressed: #93c5fd;
+    --cp-on-primary: #0f172a;
+    --cp-secondary: #818cf8;
+    --cp-secondary-soft: rgba(129, 140, 248, 0.14);
+    --cp-danger: #f87171;
+    --cp-danger-bg: rgba(248, 113, 113, 0.12);
+    --cp-ok: #6ee7b7;
+    --cp-ok-bg: #14342b;
+    --cp-warn: #fcd34d;
+    --cp-warn-bg: #3a2a0a;
+    --cp-ring: #93c5fd;
+    --cp-hover: rgba(255, 255, 255, 0.06);
+  }
+}

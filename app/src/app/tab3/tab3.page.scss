@@ -1,0 +1,55 @@
+.secciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+h3 {
+  margin: 0 0 4px;
+  color: var(--cp-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.conexion {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  ion-icon { flex-shrink: 0; font-size: 28px; color: var(--cp-ok); }
+  h2 { margin: 0; font-family: var(--cp-font-heading); font-size: 1.125rem; }
+  p { margin: 4px 0 0; color: var(--cp-muted); line-height: 1.5; }
+
+  &.offline {
+    border-color: var(--cp-danger);
+    background: var(--cp-danger-bg);
+    ion-icon { color: var(--cp-danger); }
+  }
+}
+
+.grande {
+  margin: 0 0 12px;
+  color: var(--cp-secondary);
+  font-family: var(--cp-font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.meta {
+  margin: 10px 0 0;
+  color: var(--cp-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.error { color: var(--cp-danger); font-weight: 600; }
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+
+  .cp-btn { flex: 1 1 140px; white-space: nowrap; }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "clima-pwa",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

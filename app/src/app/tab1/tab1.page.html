@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Vender</ion-title>
+    <app-estado-red slot="end"></app-estado-red>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="cp-page">
+
+    <!-- Estado del catálogo (cache-first) -->
+    <p class="cache-info cp-fade-up" aria-live="polite">
+      @if (actualizando()) {
+        <ion-spinner name="dots" aria-hidden="true"></ion-spinner> Actualizando catálogo…
+      } @else if (ultimaActualizacion(); as fecha) {
+        <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+        Catálogo actualizado {{ fecha | date: "d MMM, HH:mm" }}
+        @if (!estado.enLinea()) { · usando datos guardados }
+      }
+    </p>
+
+    @if (cargando()) {
+      <ul class="grid" aria-busy="true" aria-label="Cargando productos">
+        @for (i of [1, 2, 3, 4]; track i) {
+          <li class="producto cp-card skeleton"><span></span><span></span></li>
+        }
+      </ul>
+    } @else if (!productos().length) {
+      <div class="cp-empty">
+        <ion-icon name="cloud-download-outline" aria-hidden="true"></ion-icon>
+        <h2>Aún no hay productos</h2>
+        <p>Conéctate a internet una vez para descargar el catálogo. Después podrás vender sin conexión.</p>
+        <button type="button" class="cp-btn cp-btn-outline" style="margin-top: 16px" (click)="cargarCatalogo()" [disabled]="actualizando()">
+          Reintentar
+        </button>
+      </div>
+    } @else {
+      <ul class="grid cp-stagger" aria-label="Productos">
+        @for (p of productos(); track p.id; let i = $index) {
+          <li class="producto cp-card" [class.en-carrito]="cantidadDe(p.id) > 0" [style.--i]="i">
+            <div class="info">
+              <h3>{{ p.nombre }}</h3>
+              @if (p.descripcion) { <p>{{ p.descripcion }}</p> }
+              <strong class="precio cp-num">{{ p.precio | currency: "MXN" : "symbol-narrow" }}</strong>
+            </div>
+
+            @if (cantidadDe(p.id) === 0) {
+              <button type="button" class="cp-btn cp-btn-outline cp-block agregar" (click)="agregar(p)" [attr.aria-label]="'Agregar ' + p.nombre">
+                <ion-icon name="add" aria-hidden="true"></ion-icon> Agregar
+              </button>
+            } @else {
+              <div class="stepper cp-pop" role="group" [attr.aria-label]="'Cantidad de ' + p.nombre">
+                <button type="button" (click)="quitar(p)" [attr.aria-label]="'Quitar un ' + p.nombre">
+                  <ion-icon name="remove" aria-hidden="true"></ion-icon>
+                </button>
+                <!-- @for con un solo valor: al cambiar la cantidad se vuelve a crear y repite la animación -->
+                @for (c of [cantidadDe(p.id)]; track c) { <span class="cp-num cp-pop">{{ c }}</span> }
+                <button type="button" (click)="agregar(p)" [attr.aria-label]="'Agregar otro ' + p.nombre">
+                  <ion-icon name="add" aria-hidden="true"></ion-icon>
+                </button>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </main>
+</ion-content>
+
+<!-- Carrito: aparece cuando hay productos agregados -->
+@if (carrito().length) {
+  <ion-footer>
+    <section class="carrito" aria-label="Carrito">
+      @if (verCarrito()) {
+        <ul class="lineas cp-expand">
+          @for (l of carrito(); track l.producto.id) {
+            <li>
+              <span>{{ l.cantidad }} × {{ l.producto.nombre }}</span>
+              <span class="cp-num">{{ l.cantidad * l.producto.precio | currency: "MXN" : "symbol-narrow" }}</span>
+            </li>
+          }
+        </ul>
+        <button type="button" class="vaciar" (click)="vaciarCarrito()">Vaciar carrito</button>
+      }
+
+      <div class="resumen">
+        <button type="button" class="toggle" (click)="verCarrito.set(!verCarrito())" [attr.aria-expanded]="verCarrito()">
+          <span class="articulos">{{ totalArticulos() }} {{ totalArticulos() === 1 ? 'artículo' : 'artículos' }}</span>
+          @for (t of [total()]; track t) {
+            <strong class="cp-num cp-pop">{{ t | currency: "MXN" : "symbol-narrow" }}</strong>
+          }
+          <ion-icon [name]="verCarrito() ? 'chevron-down' : 'chevron-up'" aria-hidden="true"></ion-icon>
+        </button>
+        <button type="button" class="cp-btn cp-btn-primary" (click)="cobrar()" [disabled]="cobrando()">
+          @if (cobrando()) {
+            <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+          } @else {
+            <ion-icon name="checkmark" aria-hidden="true"></ion-icon>
+          }
+          Cobrar
+        </button>
+      </div>
+    </section>
+  </ion-footer>
+}

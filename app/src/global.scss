@@ -1,0 +1,244 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Superficies de Ionic con los tokens de src/theme/variables.scss */
+ion-content {
+  --background: var(--cp-bg);
+  --color: var(--cp-fg);
+}
+
+ion-toolbar {
+  --background: var(--cp-bg);
+  --color: var(--cp-fg);
+  --border-color: transparent;
+}
+
+/* Línea con el degradado de la marca bajo cada barra superior */
+ion-header::after {
+  content: '';
+  display: block;
+  height: 3px;
+  background: var(--cp-gradient);
+}
+
+ion-title {
+  font-family: var(--cp-font-heading);
+  font-weight: 600;
+}
+
+ion-tab-bar {
+  --background: var(--cp-surface);
+  --border: 1px solid var(--cp-divider);
+}
+
+ion-tab-button {
+  --color: var(--cp-muted);
+  --color-selected: var(--cp-secondary);
+  --background-focused: var(--cp-hover);
+  --ripple-color: var(--cp-secondary);
+  font-weight: 600;
+
+  ion-icon { transition: transform var(--cp-base) var(--cp-ease-spring); }
+  &.tab-selected ion-icon { transform: translateY(-2px) scale(1.12); }
+  ion-badge { animation: cp-pop var(--cp-base) var(--cp-ease-spring) both; }
+}
+
+/* =========================================================
+   ANIMACIONES (solo transform y opacity: no mueven el layout)
+   ========================================================= */
+
+@keyframes cp-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes cp-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes cp-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: none; }
+}
+
+@keyframes cp-expand {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes cp-spin { to { transform: rotate(360deg); } }
+
+@keyframes cp-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+/* Entrada escalonada: cada elemento usa style="--i: n" para retrasarse un poco más */
+.cp-stagger > * {
+  animation: cp-fade-up var(--cp-slow) var(--cp-ease) both;
+  animation-delay: calc(min(var(--i, 0), 10) * 45ms);
+}
+
+.cp-fade-up { animation: cp-fade-up var(--cp-slow) var(--cp-ease) both; }
+.cp-pop { display: inline-block; animation: cp-pop var(--cp-base) var(--cp-ease-spring) both; }
+.cp-expand { animation: cp-expand var(--cp-base) var(--cp-ease) both; }
+.cp-spin { animation: cp-spin 1s linear infinite; }
+.cp-pulse { animation: cp-pulse 1.6s ease-in-out infinite; }
+
+/* =========================================================
+   BOTONES
+   ========================================================= */
+.cp-btn {
+  min-height: var(--cp-control-h);
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--cp-radius);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--cp-fast) ease, opacity var(--cp-fast) ease,
+    transform var(--cp-fast) var(--cp-ease), box-shadow var(--cp-base) var(--cp-ease);
+
+  ion-icon { font-size: 20px; }
+  ion-spinner { width: 20px; height: 20px; color: currentColor; }
+  &:active:not(:disabled) { transform: scale(0.97); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:focus-visible { outline: 2px solid var(--cp-ring); outline-offset: 2px; }
+}
+
+/* Botón principal con el degradado azul → índigo */
+.cp-btn-primary {
+  border: none;
+  background: var(--cp-gradient);
+  color: var(--cp-on-primary);
+  box-shadow: 0 6px 18px -8px var(--cp-secondary);
+
+  &:hover:not(:disabled) { box-shadow: 0 10px 24px -8px var(--cp-secondary); }
+  &:disabled { box-shadow: none; }
+}
+
+.cp-btn-outline {
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-fg);
+  &:hover:not(:disabled) { background: var(--cp-hover); }
+}
+
+.cp-btn-danger {
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-danger);
+  &:hover:not(:disabled) { background: var(--cp-danger-bg); }
+}
+
+.cp-block { width: 100%; }
+
+/* =========================================================
+   CONTENEDORES
+   ========================================================= */
+.cp-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px calc(32px + var(--ion-safe-area-bottom, 0px));
+  color: var(--cp-fg);
+}
+
+.cp-card {
+  padding: 16px;
+  border-radius: var(--cp-radius-lg);
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-divider);
+  transition: border-color var(--cp-base) var(--cp-ease), box-shadow var(--cp-base) var(--cp-ease),
+    transform var(--cp-base) var(--cp-ease);
+}
+
+/* Etiquetas de estado de sincronización */
+.cp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  animation: cp-pop var(--cp-base) var(--cp-ease-spring) both;
+
+  ion-icon { font-size: 14px; }
+  &.ok { color: var(--cp-ok); background: var(--cp-ok-bg); }
+  &.warn { color: var(--cp-warn); background: var(--cp-warn-bg); }
+  &.danger { color: var(--cp-danger); background: var(--cp-danger-bg); }
+}
+
+/* Estados vacíos */
+.cp-empty {
+  padding: 40px 24px;
+  text-align: center;
+  border-radius: var(--cp-radius-lg);
+  border: 1px dashed var(--cp-border);
+  color: var(--cp-muted);
+  animation: cp-fade-up var(--cp-slow) var(--cp-ease) both;
+
+  ion-icon { font-size: 40px; color: var(--cp-secondary); }
+  h2 {
+    margin: 12px 0 4px;
+    color: var(--cp-fg);
+    font-family: var(--cp-font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  p { max-width: 36ch; margin: 0 auto; line-height: 1.5; }
+}
+
+.cp-num { font-variant-numeric: tabular-nums; }
+
+/* Respeta "reducir movimiento" del sistema: todo aparece en su estado final, sin animar */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
