@@ -93,6 +93,13 @@
           <p class="aviso" role="status">No se pudo actualizar; se muestran las últimas guardadas.</p>
         }
       </section>
+
+      <!-- Mapa con el radio permitido para checar asistencia -->
+      <section class="cp-card mapa-card" style="--i: 2" aria-labelledby="titulo-mapa">
+        <h2 id="titulo-mapa">Ubicación y radio permitido</h2>
+        <p class="meta-mapa">El círculo marca dónde se puede registrar la entrada ({{ o.radio_m }} m).</p>
+        <app-mapa-obra [lat]="o.lat" [lng]="o.lng" [radio]="o.radio_m" [nombre]="o.nombre"></app-mapa-obra>
+      </section>
     } @else {
       <div class="cp-empty">
         <ion-icon name="business-outline" aria-hidden="true"></ion-icon>

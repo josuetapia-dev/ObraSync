@@ -120,3 +120,10 @@ h3 { margin: 0 0 8px; color: var(--cp-muted); font-size: 0.875rem; font-weight: 
 }
 
 .aviso { margin: 12px 0 0; color: var(--cp-warn); font-size: 0.875rem; }
+
+.mapa-card {
+  margin-top: 12px;
+
+  h2 { margin: 0; font-family: var(--cp-font-heading); font-size: 1.125rem; font-weight: 600; }
+  .meta-mapa { margin: 4px 0 12px; color: var(--cp-muted); font-size: 0.875rem; }
+}

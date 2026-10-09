@@ -17,6 +17,7 @@
               "base": "www",
               "browser": ""
             },
+            "allowedCommonJsDependencies": ["leaflet"],
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [],
@@ -39,7 +40,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": ["node_modules/leaflet/dist/leaflet.css", "src/global.scss", "src/theme/variables.scss"],
             "scripts": []
           },
           "configurations": {
