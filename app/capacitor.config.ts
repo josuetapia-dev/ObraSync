@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'mx.utgz.climapwa',
-  appName: 'Clima PWA',
+  appId: 'com.josuetapia.obrasync',
+  appName: 'ObraSync',
   webDir: 'www'
 };
 

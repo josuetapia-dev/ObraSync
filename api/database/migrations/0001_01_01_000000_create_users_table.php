@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('rol', 20)->default('trabajador'); // App\Enums\Rol
+            $table->boolean('activo')->default(true);          // false = no puede iniciar sesión
             $table->rememberToken();
             $table->timestamps();
         });

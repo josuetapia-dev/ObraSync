@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Perfil</ion-title>
+    <app-estado-red slot="end"></app-estado-red>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="cp-page cp-stagger">
+    @if (usuario(); as u) {
+      <section class="identidad" style="--i: 0">
+        <span class="avatar" aria-hidden="true">{{ iniciales() }}</span>
+        <div>
+          <h2>{{ u.nombre }}</h2>
+          <p>{{ u.email }}</p>
+          <span class="cp-chip rol">{{ u.rol_etiqueta }}</span>
+        </div>
+      </section>
+
+      <section class="cp-card" style="--i: 1">
+        <h3>Esta sesión</h3>
+        <p class="meta">
+          La sesión queda guardada en este dispositivo: puedes abrir ObraSync y registrar
+          aunque no haya señal. Tus registros se envían al volver la conexión.
+        </p>
+      </section>
+
+      <button type="button" class="cp-btn cp-btn-danger cp-block" style="--i: 2" (click)="confirmarSalida()">
+        <ion-icon name="log-out-outline" aria-hidden="true"></ion-icon> Cerrar sesión
+      </button>
+    }
+  </main>
+</ion-content>

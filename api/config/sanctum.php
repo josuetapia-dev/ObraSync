@@ -50,7 +50,8 @@ return [
     |
     */
 
-    'expiration' => null,
+    // ObraSync trabaja sin conexión por días: el token dura 30 días (en minutos).
+    'expiration' => env('SANCTUM_EXPIRATION', 60 * 24 * 30),
 
     /*
     |--------------------------------------------------------------------------
