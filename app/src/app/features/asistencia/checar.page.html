@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Checar</ion-title>
+    <app-estado-red slot="end"></app-estado-red>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="cp-page cp-stagger">
+    @if (cargando()) {
+      <div class="cp-card skeleton" aria-busy="true" aria-label="Cargando"><span></span><span></span></div>
+    } @else if (!obras().length) {
+      <div class="cp-empty">
+        <ion-icon name="business-outline" aria-hidden="true"></ion-icon>
+        <h2>Sin obras guardadas</h2>
+        <p>Para checar necesitas tus obras en el teléfono. Abre "Obras" con internet una vez.</p>
+      </div>
+    } @else {
+      <!-- Turno -->
+      <section class="cp-card turno" [class.abierto]="turnoAbierto()" style="--i: 0" aria-labelledby="titulo-turno">
+        @if (turnoAbierto(); as t) {
+          <h2 id="titulo-turno">Turno en curso</h2>
+          <p class="cronometro cp-num" role="timer" aria-live="off">{{ duracion() }}</p>
+          <p class="meta">Entrada a las {{ t.registrado_en | date: 'HH:mm' }} · {{ nombres().get(t.obra_id) ?? 'Obra' }}</p>
+          @if (turnoLargo()) {
+            <p class="aviso" role="status">
+              <ion-icon name="warning-outline" aria-hidden="true"></ion-icon>
+              Llevas más de 14 h con la entrada abierta. Si olvidaste checar la salida, regístrala y avisa a tu mayordomo.
+            </p>
+          }
+        } @else {
+          <h2 id="titulo-turno">Sin turno abierto</h2>
+          <p class="meta">
+            @if (historial()[0]; as u) {
+              Última salida {{ u.registrado_en | tiempoRelativo }}.
+            } @else {
+              Aún no tienes registros en este teléfono.
+            }
+          </p>
+        }
+      </section>
+
+      <!-- Obra -->
+      <div class="cp-field" style="--i: 1">
+        <label for="obra">Obra</label>
+        <select id="obra" [value]="obraId()" (change)="cambiarObra($any($event.target).value)" [disabled]="!!turnoAbierto()">
+          @for (o of obras(); track o.id) {
+            <option [value]="o.id" [selected]="o.id === obraId()">{{ o.nombre }}</option>
+          }
+        </select>
+        @if (turnoAbierto()) {
+          <p class="ayuda">La salida se registra en la obra donde entraste.</p>
+        }
+      </div>
+
+      <!-- Ubicación (vista previa; el servidor confirma) -->
+      <section class="cp-card gps" style="--i: 2" aria-labelledby="titulo-gps" aria-live="polite">
+        <header class="cabecera">
+          <h2 id="titulo-gps">Tu ubicación</h2>
+          <button type="button" class="cp-btn cp-btn-outline icono-btn" (click)="actualizarUbicacion()"
+            [disabled]="buscandoGps()" aria-label="Actualizar ubicación">
+            <ion-icon name="locate-outline" [class.cp-pulse]="buscandoGps()" aria-hidden="true"></ion-icon>
+          </button>
+        </header>
+
+        @if (buscandoGps() && !posicion()) {
+          <p class="estado-gps"><ion-spinner name="dots" aria-hidden="true"></ion-spinner> Buscando señal GPS…</p>
+        } @else if (errorGps(); as err) {
+          <p class="estado-gps error"><ion-icon name="alert-circle-outline" aria-hidden="true"></ion-icon> {{ err }}</p>
+        } @else if (distancia() !== null && obra(); as o) {
+          <p class="distancia">
+            <span class="cp-num">{{ formatearDistancia(distancia()!) }}</span>
+            <span class="de">de la obra</span>
+          </p>
+          @if (dentro()) {
+            <span class="cp-chip ok"><ion-icon name="checkmark-circle-outline" aria-hidden="true"></ion-icon>Dentro del radio ({{ o.radio_m }} m)</span>
+          } @else {
+            <span class="cp-chip danger"><ion-icon name="alert-circle-outline" aria-hidden="true"></ion-icon>Fuera del radio ({{ o.radio_m }} m)</span>
+          }
+          <p class="meta precision" [class.baja]="precisionBaja()">
+            Precisión ±{{ posicion()!.precisionM }} m
+            @if (precisionBaja()) { · señal débil, el registro quedará marcado }
+          </p>
+        }
+      </section>
+
+      <!-- Acción principal -->
+      <div class="accion" style="--i: 3">
+        <button type="button" class="cp-btn cp-btn-primary cp-block grande" [class.salida]="siguiente() === 'salida'"
+          (click)="registrar()" [disabled]="registrando() || !obra()">
+          @if (registrando()) {
+            <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+            {{ buscandoGps() ? 'Obteniendo ubicación…' : 'Guardando…' }}
+          } @else {
+            <ion-icon [name]="siguiente() === 'entrada' ? 'log-in-outline' : 'log-out-outline'" aria-hidden="true"></ion-icon>
+            Registrar {{ siguiente() }}
+          }
+        </button>
+        <p class="ayuda">Funciona sin señal: se guarda en el teléfono y se envía solo.</p>
+      </div>
+
+      <!-- Historial -->
+      <section style="--i: 4" aria-labelledby="titulo-historial">
+        <h2 id="titulo-historial" class="titulo-seccion">Mis registros</h2>
+        @if (!historial().length) {
+          <p class="meta">Tus entradas y salidas aparecerán aquí.</p>
+        } @else {
+          <ul class="historial">
+            @for (a of historial(); track a.local_id) {
+              <li class="registro">
+                <span class="tipo {{ a.tipo }}" aria-hidden="true">
+                  <ion-icon [name]="a.tipo === 'entrada' ? 'log-in-outline' : 'log-out-outline'"></ion-icon>
+                </span>
+                <div class="r-texto">
+                  <p class="r-titulo">
+                    <strong>{{ a.tipo === 'entrada' ? 'Entrada' : 'Salida' }}</strong>
+                    <span class="cp-num">{{ a.registrado_en | date: 'EEE d MMM, HH:mm' }}</span>
+                  </p>
+                  <p class="r-obra">{{ nombres().get(a.obra_id) ?? 'Obra ' + a.obra_id }}</p>
+                  <div class="r-etiquetas">
+                    @for (e of etiquetas(a); track e.texto) {
+                      <span class="cp-chip {{ e.clase }}"><ion-icon [name]="e.icono" aria-hidden="true"></ion-icon>{{ e.texto }}</span>
+                    }
+                  </div>
+                  @if (a.sync_status === 'rechazado' || a.sync_status === 'error') {
+                    <p class="r-motivo">{{ a.ultimo_error }}</p>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+  </main>
+</ion-content>
