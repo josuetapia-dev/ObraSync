@@ -1,14 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { Estado } from '../services/estado';
-
+/** Barra de pestañas inferior. Cada módulo agrega su pestaña al terminarse. */
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
   standalone: false,
 })
-export class TabsPage {
-  // Para mostrar el número de ventas pendientes en la pestaña Sincronizar.
-  readonly estado = inject(Estado);
-}
+export class TabsPage {}

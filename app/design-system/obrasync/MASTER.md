@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** Clima PWA
+**Project:** ObraSync
 **Generated:** 2026-10-08 18:28:30
 **Category:** General
 **Design Dials:** Variance 3/10 (Centered / Minimal) | Motion 3/10 (Subtle) | Density 5/10 (Standard)

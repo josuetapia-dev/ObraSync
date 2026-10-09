@@ -1,21 +1,9 @@
 import { addIcons } from 'ionicons';
 import {
-  add,
-  cartOutline,
-  checkmark,
-  chevronDown,
-  chevronUp,
-  cloudDoneOutline,
-  cloudDownloadOutline,
   cloudOfflineOutline,
-  cloudUploadOutline,
-  receiptOutline,
-  refreshOutline,
-  remove,
-  syncOutline,
-  timeOutline,
-  trashBinOutline,
-  trashOutline,
+  constructOutline,
+  homeOutline,
+  personCircleOutline,
   wifi,
 } from 'ionicons/icons';
 
@@ -23,28 +11,16 @@ import {
  * Recursos que deben estar disponibles sin internet.
  *
  * Ionic descarga cada icono y cada componente la primera vez que se usa. Si eso pasa
- * sin conexión (p. ej. el primer aviso al cobrar offline), no aparecen. Por eso:
- * - los iconos se incluyen dentro de la app con addIcons;
+ * sin conexión, no aparecen. Por eso:
+ * - los iconos se incluyen dentro de la app con addIcons (agrega aquí los nuevos);
  * - los componentes que se usan después se precargan al arrancar.
  */
 export function registrarIconos() {
   addIcons({
-    add,
-    cartOutline,
-    checkmark,
-    chevronDown,
-    chevronUp,
-    cloudDoneOutline,
-    cloudDownloadOutline,
     cloudOfflineOutline,
-    cloudUploadOutline,
-    receiptOutline,
-    refreshOutline,
-    remove,
-    syncOutline,
-    timeOutline,
-    trashBinOutline,
-    trashOutline,
+    constructOutline,
+    homeOutline,
+    personCircleOutline,
     wifi,
   });
 }

@@ -7,10 +7,10 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Datos iniciales: catálogo de productos para el carrito.
+     * Datos iniciales de ObraSync.
      */
     public function run(): void
     {
-        $this->call(ProductoSeeder::class);
+        //
     }
 }
