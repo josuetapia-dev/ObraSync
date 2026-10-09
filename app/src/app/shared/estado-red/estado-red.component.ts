@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 
 import { Red } from '../../core/red';
+import { Sincronizador } from '../../core/sync/sincronizador';
 
-/** Etiqueta en la barra superior con el estado de la conexión. */
+/** Etiqueta en la barra superior: conexión y registros pendientes de enviar. */
 @Component({
   selector: 'app-estado-red',
   standalone: false,
@@ -13,6 +14,11 @@ import { Red } from '../../core/red';
       } @else {
         <span class="cp-chip danger"><ion-icon name="cloud-offline-outline" class="cp-pulse" aria-hidden="true"></ion-icon>Sin conexión</span>
       }
+      @if (sync.sincronizando()) {
+        <span class="cp-chip warn"><ion-icon name="sync-outline" class="cp-spin" aria-hidden="true"></ion-icon>Enviando</span>
+      } @else if (sync.pendientes() > 0) {
+        <span class="cp-chip warn">{{ sync.pendientes() }} sin enviar</span>
+      }
     </div>
   `,
   styles: [`
@@ -21,4 +27,5 @@ import { Red } from '../../core/red';
 })
 export class EstadoRedComponent {
   readonly red = inject(Red);
+  readonly sync = inject(Sincronizador);
 }

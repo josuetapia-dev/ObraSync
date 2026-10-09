@@ -23,6 +23,7 @@
     "@capacitor-community/sqlite": "^8.1.1",
     "@capacitor/app": "8.1.2",
     "@capacitor/core": "8.5.3",
+    "@capacitor/geolocation": "^8.2.3",
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.6",
     "@capacitor/status-bar": "8.0.4",
