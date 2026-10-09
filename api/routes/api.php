@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CondicionesController;
+use App\Http\Controllers\Api\ObraController;
 use Illuminate\Support\Facades\Route;
 
 // Rutas de la API (prefijo /api). Las consume la app Ionic de ObraSync.
@@ -15,4 +17,9 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:lo
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Obras asignadas (el admin ve todas).
+    Route::get('/obras', [ObraController::class, 'index']);
+    Route::get('/obras/{obra}', [ObraController::class, 'show']);
+    Route::get('/obras/{obra}/condiciones', CondicionesController::class);
 });

@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/obras" text="" aria-label="Volver a mis obras"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ obra()?.nombre ?? 'Obra' }}</ion-title>
+    <app-estado-red slot="end"></app-estado-red>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="cp-page cp-stagger">
+    @if (obra(); as o) {
+      <!-- Ubicación -->
+      <section class="ubicacion" style="--i: 0">
+        <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+        <div>
+          <p class="direccion">{{ o.direccion ?? 'Sin dirección' }}</p>
+          <p class="meta">Radio permitido para checar: {{ o.radio_m }} m</p>
+        </div>
+      </section>
+
+      <!-- Condiciones de hoy -->
+      <section class="cp-card condiciones" style="--i: 1" aria-labelledby="titulo-condiciones">
+        <header class="cabecera">
+          <h2 id="titulo-condiciones">Condiciones de hoy</h2>
+          <button type="button" class="cp-btn cp-btn-outline actualizar" (click)="actualizar()"
+            [disabled]="actualizando() || !red.enLinea()" aria-label="Actualizar condiciones">
+            <ion-icon name="refresh-outline" [class.cp-spin]="actualizando()" aria-hidden="true"></ion-icon>
+          </button>
+        </header>
+
+        @if (condiciones(); as c) {
+          <!-- Antigüedad de los datos (cache-first) -->
+          <p class="antiguedad" [class.vieja]="viejas()" aria-live="polite">
+            <ion-icon [name]="viejas() ? 'warning-outline' : 'time-outline'" aria-hidden="true"></ion-icon>
+            Actualizado {{ c.guardadoEn | tiempoRelativo }}
+            @if (viejas()) { · pueden haber cambiado }
+            @if (!red.enLinea()) { · sin conexión }
+          </p>
+
+          <div class="ahora">
+            <ion-icon class="clima" [name]="icono(c.datos.ahora.codigo)" aria-hidden="true"></ion-icon>
+            <div>
+              <p class="temp cp-num">{{ c.datos.ahora.temp | number: '1.0-0' }}<span>°C</span></p>
+              <p class="desc">{{ c.datos.ahora.descripcion }} · Humedad {{ c.datos.ahora.humedad }} %</p>
+            </div>
+            <app-semaforo class="general" [nivel]="c.datos.nivel"></app-semaforo>
+          </div>
+
+          <ul class="riesgos">
+            @for (r of riesgos(); track r.clave) {
+              <li class="riesgo nivel-{{ r.riesgo.nivel }}">
+                <span class="r-icono" aria-hidden="true"><ion-icon [name]="r.icono"></ion-icon></span>
+                <div class="r-texto">
+                  <div class="r-fila">
+                    <strong>{{ r.titulo }}</strong>
+                    <app-semaforo [nivel]="r.riesgo.nivel"></app-semaforo>
+                  </div>
+                  <p class="r-valor">{{ r.detalle }}: <span class="cp-num">{{ r.riesgo.valor }} {{ r.riesgo.unidad }}</span></p>
+                  <p class="r-mensaje">{{ r.riesgo.mensaje }}</p>
+                </div>
+              </li>
+            }
+          </ul>
+
+          <!-- Próximas horas -->
+          <h3>Próximas horas</h3>
+          <ol class="horas" aria-label="Pronóstico por horas">
+            @for (h of c.datos.proximas_horas; track h.hora) {
+              <li>
+                <span class="h-hora">{{ h.hora | date: 'HH:mm' }}</span>
+                <ion-icon [name]="icono(h.codigo)" aria-hidden="true"></ion-icon>
+                <span class="h-temp cp-num">{{ h.temp | number: '1.0-0' }}°</span>
+                <span class="h-dato cp-num" title="Probabilidad de lluvia"><ion-icon name="rainy-outline" aria-hidden="true"></ion-icon>{{ h.prob_lluvia }}%</span>
+                <span class="h-dato cp-num" title="Ráfagas"><ion-icon name="flag-outline" aria-hidden="true"></ion-icon>{{ h.rafaga_kmh }}</span>
+              </li>
+            }
+          </ol>
+        } @else if (actualizando()) {
+          <p class="vacio"><ion-spinner name="dots" aria-hidden="true"></ion-spinner> Consultando condiciones…</p>
+        } @else {
+          <p class="vacio">
+            @if (red.enLinea()) {
+              No se pudieron obtener las condiciones. Intenta de nuevo.
+            } @else {
+              Sin condiciones guardadas para esta obra. Se descargarán al volver la conexión.
+            }
+          </p>
+        }
+
+        @if (fallo() && condiciones()) {
+          <p class="aviso" role="status">No se pudo actualizar; se muestran las últimas guardadas.</p>
+        }
+      </section>
+
+      <!-- Mapa con el radio permitido para checar asistencia -->
+      <section class="cp-card mapa-card" style="--i: 2" aria-labelledby="titulo-mapa">
+        <h2 id="titulo-mapa">Ubicación y radio permitido</h2>
+        <p class="meta-mapa">El círculo marca dónde se puede registrar la entrada ({{ o.radio_m }} m).</p>
+        <app-mapa-obra [lat]="o.lat" [lng]="o.lng" [radio]="o.radio_m" [nombre]="o.nombre"></app-mapa-obra>
+      </section>
+    } @else {
+      <div class="cp-empty">
+        <ion-icon name="business-outline" aria-hidden="true"></ion-icon>
+        <h2>Obra no disponible</h2>
+        <p>No está en tus obras guardadas. Vuelve a la lista y actualiza.</p>
+      </div>
+    }
+  </main>
+</ion-content>

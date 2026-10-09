@@ -70,7 +70,7 @@ export class LoginPage {
       const { email, password } = this.form.getRawValue();
       await this.auth.iniciarSesion(email, password);
       this.form.reset();
-      this.router.navigateByUrl('/tabs/inicio', { replaceUrl: true });
+      this.router.navigateByUrl('/tabs/obras', { replaceUrl: true });
     } catch (e) {
       this.error.set(e instanceof ErrorLogin ? e.message : 'No se pudo iniciar sesión.');
       queueMicrotask(() => this.alerta()?.nativeElement.focus());

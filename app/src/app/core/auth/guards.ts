@@ -9,4 +9,4 @@ export const authGuard: CanActivateFn = () =>
 
 /** Si ya hay sesión, el login no se muestra. */
 export const invitadoGuard: CanActivateFn = () =>
-  inject(Auth).autenticado() ? inject(Router).createUrlTree(['/tabs/inicio']) : true;
+  inject(Auth).autenticado() ? inject(Router).createUrlTree(['/tabs/obras']) : true;

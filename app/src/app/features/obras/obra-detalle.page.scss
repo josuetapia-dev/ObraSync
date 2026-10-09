@@ -1,0 +1,129 @@
+.ubicacion {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+
+  ion-icon { flex-shrink: 0; margin-top: 2px; font-size: 20px; color: var(--cp-secondary); }
+  .direccion { margin: 0; }
+  .meta { margin: 2px 0 0; color: var(--cp-muted); font-size: 0.875rem; }
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  h2 { margin: 0; font-family: var(--cp-font-heading); font-size: 1.125rem; font-weight: 600; }
+}
+
+.actualizar { width: 48px; padding: 0; }
+
+.antiguedad {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 14px;
+  color: var(--cp-muted);
+  font-size: 0.8125rem;
+
+  &.vieja { color: var(--cp-warn); font-weight: 600; }
+}
+
+.ahora {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  .clima { font-size: 44px; color: var(--cp-ring); }
+  .temp {
+    margin: 0;
+    font-family: var(--cp-font-heading);
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+    span { font-size: 1rem; color: var(--cp-muted); margin-left: 2px; }
+  }
+  .desc { margin: 4px 0 0; color: var(--cp-muted); font-size: 0.875rem; &::first-letter { text-transform: uppercase; } }
+  .general { margin-left: auto; }
+}
+
+.riesgos {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Cada riesgo con una franja de color a la izquierda según su nivel.
+.riesgo {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--cp-radius);
+  border: 1px solid var(--cp-divider);
+  border-left-width: 4px;
+
+  &.nivel-verde { border-left-color: var(--cp-ok); }
+  &.nivel-amarillo { border-left-color: var(--cp-warn); }
+  &.nivel-rojo { border-left-color: var(--cp-danger); background: var(--cp-danger-bg); }
+}
+
+.r-icono { flex-shrink: 0; font-size: 22px; color: var(--cp-muted); margin-top: 2px; }
+.r-texto { flex: 1; min-width: 0; }
+.r-fila { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.r-valor { margin: 4px 0 0; color: var(--cp-muted); font-size: 0.875rem; }
+.r-mensaje { margin: 4px 0 0; line-height: 1.45; }
+
+h3 { margin: 0 0 8px; color: var(--cp-muted); font-size: 0.875rem; font-weight: 600; }
+
+// Pronóstico por horas en una fila que se desliza horizontalmente.
+.horas {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 4px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+
+  li {
+    flex: 0 0 76px;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px;
+    border-radius: var(--cp-radius);
+    background: var(--cp-hover);
+    font-size: 0.8125rem;
+
+    > ion-icon { font-size: 22px; color: var(--cp-ring); }
+  }
+}
+
+.h-hora { color: var(--cp-muted); }
+.h-temp { font-weight: 700; font-size: 1rem; }
+.h-dato { display: flex; align-items: center; gap: 2px; color: var(--cp-muted); ion-icon { font-size: 12px; } }
+
+.vacio {
+  margin: 12px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cp-muted);
+  ion-spinner { width: 18px; height: 18px; }
+}
+
+.aviso { margin: 12px 0 0; color: var(--cp-warn); font-size: 0.875rem; }
+
+.mapa-card {
+  margin-top: 12px;
+
+  h2 { margin: 0; font-family: var(--cp-font-heading); font-size: 1.125rem; font-weight: 600; }
+  .meta-mapa { margin: 4px 0 12px; color: var(--cp-muted); font-size: 0.875rem; }
+}
