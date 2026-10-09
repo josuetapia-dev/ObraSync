@@ -84,7 +84,10 @@ export class AsistenciaRepository {
     return Number(r.values?.[0]?.n ?? 0);
   }
 
-  /** Aplica la respuesta del servidor registro por registro (todo en una transacción). */
+  /**
+   * Aplica la respuesta de Laravel, registro por registro y en una sola transacción.
+   * Se busca por local_id (el UUID enviado) y se guarda el remote_id que asignó MySQL.
+   */
   async aplicarResultados(resultados: ResultadoServidor[]) {
     const ahora = new Date().toISOString();
     const sentencias = resultados.map(r =>
@@ -105,7 +108,7 @@ export class AsistenciaRepository {
     if (sentencias.length) await this.db.executeSet(sentencias, true);
   }
 
-  /** El envío falló (sin red, servidor caído...): queda en "error" para reintentar. */
+  /** Reintentos: si el envío falla (sin red, servidor caído), queda en 'error' con intentos + 1. */
   async marcarError(localIds: string[], mensaje: string) {
     if (!localIds.length) return;
     const marcas = localIds.map(() => '?').join(', ');

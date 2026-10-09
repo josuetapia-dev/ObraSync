@@ -14,7 +14,12 @@ function valoresServidor(e: EntradaServidor): unknown[] {
     e.categoria, e.titulo, e.descripcion, e.fecha, new Date(e.editado_en).toISOString(), e.eliminado ? 1 : 0];
 }
 
-/** Acceso a la bitácora local: CRUD, búsqueda/filtros y mezcla con el servidor. */
+/**
+ * Repositorio de la bitácora: todo el SQL de la tabla local está aquí.
+ * - CRUD offline: crear, actualizar y eliminar guardan en SQLite y marcan 'pending'.
+ * - Búsqueda y filtros: se resuelven con SQL (WHERE + LIKE), sin internet.
+ * - Sincronización: entrega lo pendiente, aplica la respuesta y mezcla lo descargado.
+ */
 @Injectable({ providedIn: 'root' })
 export class BitacoraRepository {
 
@@ -26,7 +31,11 @@ export class BitacoraRepository {
 
   // ---------------------------------------------------------- consultas
 
-  /** Lista con búsqueda y filtros, todo en SQLite (funciona sin señal). */
+  /**
+   * Búsqueda y filtros en SQLite. Arma el WHERE según lo que el usuario eligió:
+   * texto (LIKE en título, descripción y autor), categoría, obra y "solo sin enviar".
+   * Los valores van como parámetros (?), nunca pegados al SQL: evita inyección SQL.
+   */
   async listar(obraIds: number[], filtro: FiltroBitacora = {}): Promise<EntradaBitacora[]> {
     if (!obraIds.length) return [];
 
@@ -64,7 +73,7 @@ export class BitacoraRepository {
     return r.values?.[0] ?? null;
   }
 
-  // ---------------------------------------------------------- cambios locales (quedan pendientes)
+  // ---------------------------------------------------------- CRUD: cada cambio queda 'pending' para enviarse
 
   async crear(datos: DatosBitacora, usuario: Usuario): Promise<string> {
     const id = crypto.randomUUID();
