@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    // Pronóstico del clima para las condiciones de obra (la key nunca se envía a la app).
+    'openweather' => [
+        'key' => env('OPENWEATHER_KEY'),
+        'url' => env('OPENWEATHER_URL', 'https://api.openweathermap.org/data/2.5'),
+    ],
+
 ];

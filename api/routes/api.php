@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CondicionesController;
 use App\Http\Controllers\Api\ObraController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Obras asignadas (el admin ve todas).
     Route::get('/obras', [ObraController::class, 'index']);
     Route::get('/obras/{obra}', [ObraController::class, 'show']);
+    Route::get('/obras/{obra}/condiciones', CondicionesController::class);
 });
