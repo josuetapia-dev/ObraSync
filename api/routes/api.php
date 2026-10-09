@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AsistenciaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BitacoraController;
 use App\Http\Controllers\Api\CondicionesController;
 use App\Http\Controllers\Api\ObraController;
 use Illuminate\Support\Facades\Route;
@@ -27,4 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Asistencia (entrada/salida). Solo se agregan registros: no hay editar ni borrar.
     Route::post('/asistencias/sync', [AsistenciaController::class, 'sincronizar']);
     Route::get('/asistencias', [AsistenciaController::class, 'index']);
+
+    // Bitácora de obra: se sube lo cambiado en el teléfono y se baja lo de los demás.
+    Route::post('/bitacora/sync', [BitacoraController::class, 'sincronizar']);
+    Route::get('/bitacora', [BitacoraController::class, 'index']);
 });
