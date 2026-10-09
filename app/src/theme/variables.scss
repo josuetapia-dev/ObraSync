@@ -28,6 +28,18 @@
   --cp-ring: #2563eb;
   --cp-hover: rgba(15, 23, 42, 0.05);
 
+  // Luces (punto de conexión y mini semáforo): elementos gráficos, contraste ≥ 3:1 con el fondo.
+  --cp-luz-verde: #16a34a;
+  --cp-luz-amarillo: #d97706;
+  --cp-luz-rojo: #dc2626;
+
+  // Mini semáforo: la caja contrasta con el fondo (oscura en modo claro, blanca en oscuro).
+  --cp-semaforo-caja: #1e293b;
+  --cp-semaforo-apagada: #475569;
+  --cp-semaforo-verde: #4ade80;
+  --cp-semaforo-amarillo: #fbbf24;
+  --cp-semaforo-rojo: #f87171;
+
   --cp-radius-sm: 10px;
   --cp-radius: 14px;
   --cp-radius-lg: 18px;
@@ -64,5 +76,13 @@
     --cp-warn-bg: #3a2a0a;
     --cp-ring: #93c5fd;
     --cp-hover: rgba(255, 255, 255, 0.06);
+    --cp-luz-verde: #4ade80;
+    --cp-luz-amarillo: #fbbf24;
+    --cp-luz-rojo: #f87171;
+    --cp-semaforo-caja: #f1f5f9;
+    --cp-semaforo-apagada: #cbd5e1;
+    --cp-semaforo-verde: #16a34a;
+    --cp-semaforo-amarillo: #d97706;
+    --cp-semaforo-rojo: #dc2626;
   }
 }
