@@ -18,6 +18,22 @@ const MIGRACIONES: string[] = [
      clave TEXT PRIMARY KEY,
      valor TEXT
    );`,
+
+  // v2: caché de obras asignadas y de sus condiciones (cache-first, funciona offline).
+  `CREATE TABLE IF NOT EXISTS obras (
+     id INTEGER PRIMARY KEY,          -- mismo id que en Laravel
+     nombre TEXT NOT NULL,
+     direccion TEXT,
+     lat REAL NOT NULL,
+     lng REAL NOT NULL,
+     radio_m INTEGER NOT NULL,
+     actualizada TEXT
+   );
+   CREATE TABLE IF NOT EXISTS condiciones_obra (
+     obra_id INTEGER PRIMARY KEY,
+     datos TEXT NOT NULL,             -- JSON tal como lo entrega la API
+     guardado_en TEXT NOT NULL        -- cuándo se descargó (para mostrar la antigüedad)
+   );`,
 ];
 
 /** Conexión única a SQLite (en el teléfono es nativo; en el navegador usa jeep-sqlite). */

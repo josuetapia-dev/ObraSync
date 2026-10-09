@@ -4,15 +4,19 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular/lazy';
 
 import { SharedModule } from '../../shared/shared.module';
-import { InicioPage } from './inicio.page';
+import { ObraDetallePage } from './obra-detalle.page';
+import { ObrasPage } from './obras.page';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
     SharedModule,
-    RouterModule.forChild([{ path: '', component: InicioPage }]),
+    RouterModule.forChild([
+      { path: '', component: ObrasPage },
+      { path: ':id', component: ObraDetallePage },
+    ]),
   ],
-  declarations: [InicioPage],
+  declarations: [ObrasPage, ObraDetallePage],
 })
-export class InicioPageModule {}
+export class ObrasPageModule {}

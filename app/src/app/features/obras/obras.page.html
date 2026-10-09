@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Mis obras</ion-title>
+    <app-estado-red slot="end"></app-estado-red>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refrescar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <main class="cp-page">
+    <p class="saludo cp-fade-up">Hola, <strong>{{ usuario()?.nombre }}</strong></p>
+
+    <!-- Estado de la caché -->
+    <p class="cache-info" aria-live="polite">
+      @if (actualizando()) {
+        <ion-spinner name="dots" aria-hidden="true"></ion-spinner> Actualizando…
+      } @else if (ultimaActualizacion(); as f) {
+        <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+        Actualizado {{ f | tiempoRelativo }}
+        @if (!red.enLinea()) { · mostrando datos guardados }
+      }
+    </p>
+
+    @if (cargando()) {
+      <ul class="lista" aria-busy="true" aria-label="Cargando obras">
+        @for (i of [1, 2, 3]; track i) {
+          <li class="cp-card skeleton"><span></span><span></span></li>
+        }
+      </ul>
+    } @else if (!obras().length) {
+      <div class="cp-empty">
+        <ion-icon [name]="ultimaActualizacion() ? 'business-outline' : 'cloud-download-outline'" aria-hidden="true"></ion-icon>
+        @if (ultimaActualizacion()) {
+          <h2>Sin obras asignadas</h2>
+          <p>Cuando la oficina te asigne a una obra, aparecerá aquí.</p>
+        } @else {
+          <h2>Aún no hay obras guardadas</h2>
+          <p>Conéctate a internet una vez para descargar tus obras. Después podrás verlas sin señal.</p>
+        }
+      </div>
+    } @else {
+      <ul class="lista cp-stagger" aria-label="Obras">
+        @for (o of obras(); track o.id; let i = $index) {
+          <li [style.--i]="i">
+            <a class="cp-card obra" [routerLink]="['/tabs/obras', o.id]">
+              <span class="icono" aria-hidden="true"><ion-icon name="business-outline"></ion-icon></span>
+              <span class="texto">
+                <span class="nombre">{{ o.nombre }}</span>
+                @if (o.direccion) { <span class="direccion">{{ o.direccion }}</span> }
+                <span class="estado">
+                  @if (niveles()[o.id]; as nivel) {
+                    <app-semaforo [nivel]="nivel" etiqueta="Condiciones"></app-semaforo>
+                  } @else {
+                    <span class="sin-datos">Sin condiciones guardadas</span>
+                  }
+                </span>
+              </span>
+              <ion-icon class="flecha" name="chevron-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </main>
+</ion-content>
