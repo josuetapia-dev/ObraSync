@@ -1,0 +1,133 @@
+h2 { margin: 0; font-family: var(--cp-font-heading); font-size: 1.0625rem; font-weight: 600; }
+.meta { margin: 4px 0 0; color: var(--cp-muted); font-size: 0.875rem; line-height: 1.5; }
+.ayuda { margin: 6px 0 0; color: var(--cp-muted); font-size: 0.8125rem; }
+
+.cp-card { margin-bottom: 16px; }
+
+// ---------------------------------------------------------- turno
+.turno {
+  text-align: center;
+
+  &.abierto {
+    border-color: var(--cp-secondary);
+    background: linear-gradient(180deg, var(--cp-secondary-soft), var(--cp-surface) 70%);
+  }
+}
+
+.cronometro {
+  margin: 8px 0 2px;
+  font-family: var(--cp-font-heading);
+  font-size: 2.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--cp-secondary);
+}
+
+.aviso {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  text-align: left;
+  border-radius: var(--cp-radius-sm);
+  background: var(--cp-warn-bg);
+  color: var(--cp-warn);
+  font-size: 0.875rem;
+  font-weight: 500;
+  ion-icon { flex-shrink: 0; font-size: 18px; margin-top: 1px; }
+}
+
+// ---------------------------------------------------------- ubicación
+.cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.icono-btn { width: var(--cp-control-h); padding: 0; }
+
+.estado-gps {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cp-muted);
+  ion-spinner { width: 20px; height: 20px; }
+  &.error { color: var(--cp-danger); align-items: flex-start; ion-icon { flex-shrink: 0; font-size: 18px; margin-top: 2px; } }
+}
+
+.distancia {
+  margin: 0 0 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  .cp-num { font-family: var(--cp-font-heading); font-size: 1.75rem; font-weight: 600; }
+  .de { color: var(--cp-muted); }
+}
+
+.precision.baja { color: var(--cp-warn); font-weight: 500; }
+
+// ---------------------------------------------------------- botón principal
+.accion { margin-bottom: 28px; text-align: center; }
+
+.grande {
+  min-height: 60px;
+  font-size: 1.125rem;
+  ion-icon { font-size: 24px; }
+}
+
+// La salida usa el índigo para distinguirse de la entrada a simple vista.
+.salida { background: var(--cp-secondary); }
+
+// ---------------------------------------------------------- historial
+.titulo-seccion { margin-bottom: 10px; }
+
+.historial {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.registro {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--cp-divider);
+  &:last-child { border-bottom: none; }
+}
+
+.tipo {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 18px;
+  &.entrada { background: var(--cp-ok-bg); color: var(--cp-ok); }
+  &.salida { background: var(--cp-secondary-soft); color: var(--cp-secondary); }
+}
+
+.r-texto { flex: 1; min-width: 0; }
+.r-titulo {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  span { color: var(--cp-muted); font-size: 0.875rem; text-transform: capitalize; }
+}
+.r-obra { margin: 2px 0 6px; color: var(--cp-muted); font-size: 0.8125rem; }
+.r-etiquetas { display: flex; flex-wrap: wrap; gap: 6px; }
+.r-motivo { margin: 6px 0 0; color: var(--cp-danger); font-size: 0.8125rem; }
+
+.skeleton {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  span { height: 14px; border-radius: 6px; background: var(--cp-hover); animation: cp-pulse 1.2s ease-in-out infinite; }
+  span:first-child { width: 40%; }
+  span:last-child { width: 60%; }
+}

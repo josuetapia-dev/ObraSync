@@ -34,6 +34,29 @@ const MIGRACIONES: string[] = [
      datos TEXT NOT NULL,             -- JSON tal como lo entrega la API
      guardado_en TEXT NOT NULL        -- cuándo se descargó (para mostrar la antigüedad)
    );`,
+
+  // v3: asistencias. Se guardan aquí primero (sin señal) y el sincronizador las envía.
+  `CREATE TABLE IF NOT EXISTS asistencias (
+     local_id TEXT PRIMARY KEY,       -- UUID del teléfono; también es la llave anti-duplicados en Laravel
+     remote_id INTEGER,               -- id que asignó Laravel
+     user_id INTEGER NOT NULL,        -- quién checó (solo se envían los del usuario con sesión)
+     obra_id INTEGER NOT NULL,
+     tipo TEXT NOT NULL,              -- entrada | salida
+     registrado_en TEXT NOT NULL,     -- hora del teléfono (ISO, UTC)
+     lat REAL NOT NULL,
+     lng REAL NOT NULL,
+     precision_m REAL,
+     sync_status TEXT NOT NULL DEFAULT 'pending',  -- pending | synced | error | rechazado
+     intentos INTEGER NOT NULL DEFAULT 0,
+     ultimo_error TEXT,
+     dentro_radio INTEGER,            -- lo decide el servidor (null hasta sincronizar)
+     distancia_m INTEGER,
+     reloj_sospechoso INTEGER,
+     precision_baja INTEGER,
+     updated_at TEXT NOT NULL
+   );
+   CREATE INDEX IF NOT EXISTS idx_asistencias_status ON asistencias (sync_status);
+   CREATE INDEX IF NOT EXISTS idx_asistencias_usuario_fecha ON asistencias (user_id, registrado_en);`,
 ];
 
 /** Conexión única a SQLite (en el teléfono es nativo; en el navegador usa jeep-sqlite). */

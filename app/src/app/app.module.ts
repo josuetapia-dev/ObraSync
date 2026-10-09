@@ -12,6 +12,8 @@ import { AppComponent } from './app.component';
 import { Database } from './core/database';
 import { Auth } from './core/auth/auth';
 import { tokenInterceptor } from './core/auth/token.interceptor';
+import { Sincronizador } from './core/sync/sincronizador';
+import { AsistenciaSync } from './features/asistencia/asistencia.sync';
 import { prepararSqliteWeb } from './core/sqlite-web';
 import { precargarComponentes, registrarIconos } from './core/offline-assets';
 
@@ -33,10 +35,14 @@ registrarIconos();
     provideAppInitializer(async () => {
       const database = inject(Database);
       const auth = inject(Auth);
+      const sincronizador = inject(Sincronizador);
+      sincronizador.registrar(inject(AsistenciaSync));
       precargarComponentes(); // en segundo plano, mientras hay red
       await prepararSqliteWeb();
       await database.inicializar();
       auth.refrescarUsuario(); // si hay red, actualiza nombre/rol (no bloquea el arranque)
+      await sincronizador.contar();
+      sincronizador.sincronizar(); // envía lo que quedó pendiente (no bloquea el arranque)
     }),
   ],
   bootstrap: [AppComponent],
