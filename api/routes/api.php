@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AsistenciaController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CondicionesController;
 use App\Http\Controllers\Api\ObraController;
@@ -22,4 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/obras', [ObraController::class, 'index']);
     Route::get('/obras/{obra}', [ObraController::class, 'show']);
     Route::get('/obras/{obra}/condiciones', CondicionesController::class);
+
+    // Asistencia (entrada/salida). Solo se agregan registros: no hay editar ni borrar.
+    Route::post('/asistencias/sync', [AsistenciaController::class, 'sincronizar']);
+    Route::get('/asistencias', [AsistenciaController::class, 'index']);
 });
