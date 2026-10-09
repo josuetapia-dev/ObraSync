@@ -12,6 +12,10 @@ const routes: Routes = [
         loadChildren: () => import('../features/inicio/inicio.module').then(m => m.InicioPageModule)
       },
       {
+        path: 'perfil',
+        loadChildren: () => import('../features/perfil/perfil.module').then(m => m.PerfilPageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/inicio',
         pathMatch: 'full'

@@ -1,0 +1,30 @@
+.identidad {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  h2 { margin: 0; font-family: var(--cp-font-heading); font-size: 1.375rem; font-weight: 600; }
+  p { margin: 2px 0 8px; color: var(--cp-muted); overflow-wrap: anywhere; }
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--cp-gradient);
+  color: #fff;
+  font-family: var(--cp-font-heading);
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.rol { color: var(--cp-secondary); background: var(--cp-secondary-soft); }
+
+h3 { margin: 0 0 4px; color: var(--cp-muted); font-size: 0.875rem; font-weight: 600; }
+.meta { margin: 0; color: var(--cp-muted); line-height: 1.5; }
+
+.cp-card { margin-bottom: 16px; }

@@ -1,8 +1,13 @@
 import { addIcons } from 'ionicons';
 import {
+  alertCircleOutline,
   cloudOfflineOutline,
   constructOutline,
+  eyeOffOutline,
+  eyeOutline,
   homeOutline,
+  logInOutline,
+  logOutOutline,
   personCircleOutline,
   wifi,
 } from 'ionicons/icons';
@@ -17,9 +22,14 @@ import {
  */
 export function registrarIconos() {
   addIcons({
+    alertCircleOutline,
     cloudOfflineOutline,
     constructOutline,
+    eyeOffOutline,
+    eyeOutline,
     homeOutline,
+    logInOutline,
+    logOutOutline,
     personCircleOutline,
     wifi,
   });

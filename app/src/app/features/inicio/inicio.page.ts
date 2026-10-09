@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+
+import { Auth } from '../../core/auth/auth';
 
 /** Pantalla de inicio (se reemplaza por "Mis obras" en la rama feat/obras). */
 @Component({
@@ -7,4 +9,6 @@ import { Component } from '@angular/core';
   styleUrls: ['inicio.page.scss'],
   standalone: false,
 })
-export class InicioPage {}
+export class InicioPage {
+  readonly usuario = inject(Auth).usuario;
+}

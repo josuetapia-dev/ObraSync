@@ -9,8 +9,8 @@
   <main class="cp-page">
     <div class="cp-empty">
       <ion-icon name="construct-outline" aria-hidden="true"></ion-icon>
-      <h2>Bienvenido a ObraSync</h2>
-      <p>Aquí aparecerán tus obras, la asistencia y la bitácora del día.</p>
+      <h2>Hola, {{ usuario()?.nombre }}</h2>
+      <p>Entraste como {{ usuario()?.rol_etiqueta }}. Aquí aparecerán tus obras, la asistencia y la bitácora del día.</p>
     </div>
   </main>
 </ion-content>

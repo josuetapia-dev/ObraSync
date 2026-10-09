@@ -1,0 +1,146 @@
+// Pantalla de login. Tokens: src/theme/variables.scss
+
+.wrapper {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(32px + var(--ion-safe-area-top, 0px)) 16px calc(32px + var(--ion-safe-area-bottom, 0px));
+}
+
+// En móvil sin tarjeta; desde 576px dentro de una tarjeta.
+.card {
+  width: 100%;
+  max-width: 400px;
+  color: var(--cp-fg);
+
+  @media (min-width: 576px) {
+    padding: 36px 32px 28px;
+    border-radius: var(--cp-radius-lg);
+    background: var(--cp-surface);
+    border: 1px solid var(--cp-divider);
+    box-shadow: 0 16px 40px -24px var(--cp-secondary);
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--cp-gradient);
+  color: #fff;
+  font-size: 24px;
+}
+
+.brand-name {
+  font-family: var(--cp-font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--cp-font-heading);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 6px 0 24px;
+  color: var(--cp-muted);
+  line-height: 1.5;
+}
+
+.aviso,
+.alerta {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: var(--cp-radius-sm);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  outline: none;
+
+  ion-icon { flex-shrink: 0; font-size: 20px; margin-top: 1px; }
+}
+
+.aviso { color: var(--cp-warn); background: var(--cp-warn-bg); }
+
+.alerta {
+  color: var(--cp-danger);
+  background: var(--cp-danger-bg);
+  border: 1px solid var(--cp-danger);
+  animation: cp-fade-up var(--cp-base) var(--cp-ease) both;
+}
+
+.con-boton {
+  position: relative;
+  input { padding-right: 52px; }
+}
+
+.ojo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48px;
+  height: var(--cp-control-h);
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  color: var(--cp-muted);
+  font-size: 22px;
+  cursor: pointer;
+
+  &:hover { color: var(--cp-fg); }
+  &:focus-visible { outline: 2px solid var(--cp-ring); outline-offset: -4px; border-radius: 10px; }
+}
+
+.entrar { margin-top: 8px; }
+
+.demo {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cp-divider);
+
+  h2 {
+    margin: 0 0 10px;
+    color: var(--cp-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  p { margin: 10px 0 0; color: var(--cp-muted); font-size: 0.8125rem; }
+  code { font-size: 0.8125rem; color: var(--cp-secondary); }
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-fg);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color var(--cp-fast) ease, color var(--cp-fast) ease;
+
+  &:hover { border-color: var(--cp-secondary); color: var(--cp-secondary); }
+  &:focus-visible { outline: 2px solid var(--cp-ring); outline-offset: 2px; }
+}
