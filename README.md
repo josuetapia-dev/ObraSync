@@ -86,6 +86,17 @@ Las crea el seeder. Contraseña de todas: **`password`**.
 3. Quita **Offline**: se envía sola. Puedes verla en phpMyAdmin.
 4. Los datos locales están en `F12` → **Application** → **IndexedDB** → `jeepSqliteStore`.
 
+**Iniciar sesión sin internet:** la primera vez se necesita internet. Después puedes cerrar sesión y volver a entrar sin señal con el mismo correo y contraseña, durante 30 días. La app guarda una huella cifrada de la contraseña (PBKDF2), nunca la contraseña. Al volver la red, se conecta sola y envía lo pendiente.
+
+### Crear tu propio usuario
+
+Todavía no hay panel de administración. Para dar de alta un usuario real (la contraseña se escribe oculta):
+
+```bash
+cd api
+php artisan usuario:crear
+```
+
 ## Pruebas
 
 ```bash

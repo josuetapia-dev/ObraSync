@@ -88,6 +88,11 @@ export class Sincronizador {
     const total: ResultadoCola = { enviados: 0, rechazados: 0, errores: 0 };
 
     try {
+      // Si entró sin internet aún no tiene token: se pide uno a Laravel antes de enviar.
+      if (!(await this.auth.reautenticar())) {
+        return null;
+      }
+
       for (const cola of this.colas) {
         try {
           const r = await cola.enviarPendientes(userId);

@@ -50,6 +50,16 @@ export class LoginPage {
     return '';
   }
 
+  /** Si la app pidió volver a escribir la contraseña, deja el correo listo y explica por qué. */
+  ionViewWillEnter() {
+    const aviso = this.auth.avisoLogin();
+    if (aviso) {
+      this.form.setValue({ email: aviso.email, password: '' });
+      this.error.set(aviso.mensaje);
+      this.auth.avisoLogin.set(null);
+    }
+  }
+
   usarCuenta(email: string) {
     this.form.setValue({ email, password: 'password' });
     this.error.set('');
