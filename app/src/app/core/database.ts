@@ -5,12 +5,27 @@ import {
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
 
+/**
+ * BASE DE DATOS LOCAL (SQLite)
+ *
+ * La app guarda todo primero en el teléfono, así funciona sin internet.
+ * - En Android/iOS usa SQLite nativo; en el navegador, jeep-sqlite (guarda en IndexedDB).
+ * - Las pantallas no escriben SQL: usan un repositorio por módulo (patrón Repository).
+ *
+ * Cola de sincronización: las tablas que se envían a Laravel (asistencias, bitacora) tienen
+ *   local_id     id creado en el teléfono (UUID), existe aunque no haya red
+ *   remote_id    id que asigna MySQL al recibirlo
+ *   sync_status  pending (falta enviar) | synced (enviado) | error (se reintenta) | rechazado
+ *   intentos     cuántas veces falló el envío; ultimo_error guarda el motivo
+ */
+
 const DB_NAME = 'obrasync';
 
 /**
- * Migraciones de la base local. Cada módulo agrega la suya al final de la lista
- * (nunca se edita una que ya existe). La versión aplicada se guarda en PRAGMA user_version,
- * así cada teléfono solo ejecuta las que le faltan.
+ * Migraciones: cada elemento es una versión de la base (v1, v2, ...).
+ * SQLite guarda la última aplicada en PRAGMA user_version, así cada teléfono solo ejecuta
+ * las que le faltan y no pierde sus datos. Para cambiar la base se agrega una versión al
+ * final; nunca se edita una existente.
  */
 const MIGRACIONES: string[] = [
   // v1: tabla clave/valor para datos sueltos (p. ej. fecha de la última sincronización).
@@ -19,7 +34,7 @@ const MIGRACIONES: string[] = [
      valor TEXT
    );`,
 
-  // v2: caché de obras asignadas y de sus condiciones (cache-first, funciona offline).
+  // v2: caché de obras y del clima (cache-first: se muestra lo guardado y luego se actualiza).
   `CREATE TABLE IF NOT EXISTS obras (
      id INTEGER PRIMARY KEY,          -- mismo id que en Laravel
      nombre TEXT NOT NULL,
@@ -35,10 +50,10 @@ const MIGRACIONES: string[] = [
      guardado_en TEXT NOT NULL        -- cuándo se descargó (para mostrar la antigüedad)
    );`,
 
-  // v3: asistencias. Se guardan aquí primero (sin señal) y el sincronizador las envía.
+  // v3: asistencias (entrada/salida). Solo se insertan; el sincronizador las envía.
   `CREATE TABLE IF NOT EXISTS asistencias (
-     local_id TEXT PRIMARY KEY,       -- UUID del teléfono; también es la llave anti-duplicados en Laravel
-     remote_id INTEGER,               -- id que asignó Laravel
+     local_id TEXT PRIMARY KEY,       -- UUID; si se reenvía, Laravel lo reconoce y no lo duplica
+     remote_id INTEGER,               -- id en MySQL (null hasta sincronizar)
      user_id INTEGER NOT NULL,        -- quién checó (solo se envían los del usuario con sesión)
      obra_id INTEGER NOT NULL,
      tipo TEXT NOT NULL,              -- entrada | salida
@@ -58,11 +73,11 @@ const MIGRACIONES: string[] = [
    CREATE INDEX IF NOT EXISTS idx_asistencias_status ON asistencias (sync_status);
    CREATE INDEX IF NOT EXISTS idx_asistencias_usuario_fecha ON asistencias (user_id, registrado_en);`,
 
-  // v4: bitácora de obra. Se edita sin señal; los cambios propios se suben y los de
-  // la cuadrilla se bajan. Si dos editan lo mismo, el servidor decide (gana la más reciente).
+  // v4: bitácora de obra (CRUD completo sin señal). Los cambios propios se suben y los de
+  // la cuadrilla se bajan. Conflicto: si dos editan la misma nota, gana la edición más reciente.
   `CREATE TABLE IF NOT EXISTS bitacora (
      local_id TEXT PRIMARY KEY,       -- UUID (el mismo en Laravel)
-     remote_id INTEGER,
+     remote_id INTEGER,               -- id en MySQL (null hasta sincronizar)
      obra_id INTEGER NOT NULL,
      autor_id INTEGER NOT NULL,
      autor_nombre TEXT,
@@ -72,8 +87,8 @@ const MIGRACIONES: string[] = [
      titulo TEXT NOT NULL,
      descripcion TEXT,
      fecha TEXT NOT NULL,             -- día de la nota (YYYY-MM-DD)
-     editado_en TEXT NOT NULL,        -- última edición (ISO, UTC)
-     eliminado INTEGER NOT NULL DEFAULT 0,
+     editado_en TEXT NOT NULL,        -- última edición (ISO, UTC); decide los conflictos
+     eliminado INTEGER NOT NULL DEFAULT 0,  -- borrar = marcar, para que el borrado también se sincronice
      sync_status TEXT NOT NULL DEFAULT 'synced',  -- synced | pending | error | rechazado
      pendiente_de INTEGER,            -- quién hizo el cambio local (solo esa sesión lo envía)
      intentos INTEGER NOT NULL DEFAULT 0,
@@ -107,6 +122,7 @@ export class Database {
     return this.db;
   }
 
+  /** Lee la versión actual y aplica, en orden, las migraciones que faltan. */
   private async migrar() {
     const res = await this.db.query('PRAGMA user_version;');
     const actual = Number(res.values?.[0]?.user_version ?? 0);

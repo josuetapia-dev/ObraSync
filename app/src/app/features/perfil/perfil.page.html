@@ -23,6 +23,9 @@
           La sesión queda guardada en este dispositivo: puedes abrir ObraSync y registrar
           aunque no haya señal. Tus registros se envían al volver la conexión.
         </p>
+        @if (sinToken()) {
+          <p class="meta aviso-offline">Entraste sin conexión: al volver la señal, la app se conecta sola con tu cuenta.</p>
+        }
       </section>
 
       <button type="button" class="cp-btn cp-btn-danger cp-block" style="--i: 2" (click)="confirmarSalida()">

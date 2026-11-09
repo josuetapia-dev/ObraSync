@@ -12,10 +12,13 @@ export interface ResumenSync extends ResultadoCola {
 const INTERVALO_MS = 60_000;
 
 /**
- * Motor de sincronización (patrón Outbox).
- * Los módulos guardan primero en SQLite como "pending" y registran aquí su cola.
- * El sincronizador las envía: al abrir la app, al volver la red, cada minuto si
- * quedan pendientes, o cuando el usuario lo pide.
+ * MOTOR DE SINCRONIZACIÓN (patrón Outbox)
+ *
+ * 1. Cada módulo guarda en SQLite con sync_status = 'pending' y registra aquí su cola.
+ * 2. El sincronizador envía las colas a Laravel: al abrir la app, al volver la red,
+ *    cada minuto si quedan pendientes, o cuando el usuario lo pide.
+ * 3. Laravel responde registro por registro: los aceptados pasan a 'synced' (con su
+ *    remote_id), los que fallan por red quedan en 'error' y se reintentan después.
  */
 @Injectable({ providedIn: 'root' })
 export class Sincronizador {
@@ -85,6 +88,11 @@ export class Sincronizador {
     const total: ResultadoCola = { enviados: 0, rechazados: 0, errores: 0 };
 
     try {
+      // Si entró sin internet aún no tiene token: se pide uno a Laravel antes de enviar.
+      if (!(await this.auth.reautenticar())) {
+        return null;
+      }
+
       for (const cola of this.colas) {
         try {
           const r = await cola.enviarPendientes(userId);

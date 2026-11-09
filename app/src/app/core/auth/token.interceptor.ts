@@ -29,7 +29,8 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(conToken).pipe(
     catchError((error: unknown) => {
-      if (error instanceof HttpErrorResponse && error.status === 401 && !req.url.endsWith('/login')) {
+      // Solo si la petición llevaba token: una sesión abierta sin internet aún no tiene uno y no se cierra.
+      if (error instanceof HttpErrorResponse && error.status === 401 && auth.token && !req.url.endsWith('/login')) {
         auth.limpiar();
         router.navigateByUrl('/login', { replaceUrl: true });
       }
